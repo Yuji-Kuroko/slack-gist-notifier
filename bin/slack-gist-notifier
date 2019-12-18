@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../../config/application', __FILE__)
+
+class CliCommand < Thor
+
+  desc 'update', 'puts hello'
+  option :notify, type: :boolean, default: false
+  def update
+    @github_client = Octokit::Client.new(access_token: Settings.github_access_token, api_endpoint: Settings.github_endpoint)
+    prev_gist_ids = GistManager.load
+
+    gists = @github_client.public_gists
+    gist_ids = gists.map(&:id)
+
+    new_gist_ids = (gist_ids - prev_gist_ids)
+    
+    if options[:notify] && new_gist_ids.present?
+      new_gists = new_gist_ids.map { |id|
+        gists.find{ |g| g.id == id }
+      }
+
+      body = new_gists.map { |gist|
+        <<~EOS
+          *#{gist.owner.login}* #{gist.description}
+          #{gist.files.to_h.keys.join(', ')}
+          #{gist.html_url}
+        EOS
+      }.join("-------\n")
+      
+      notifier = Slack::Notifier.new(Settings.slack_notification_webhook_url)
+      notifier.post({
+        channel: Settings.slack_notification_channel,
+        username: Settings.slack_notification_username,
+        icon_emoji: Settings.slack_notification_icon_emoji,
+        text: body
+      })
+    end
+
+    GistManager.save(gist_ids)
+  end
+end
+
+CliCommand.start(ARGV)

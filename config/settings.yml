@@ -1,0 +1,6 @@
+slack_notification_channel: "<%= ENV.fetch('SLACK_GIST_NOTIFICATION_CHANNEL', '#gist') %>"
+slack_notification_icon_emoji: "<%= ENV.fetch('SLACK_GIST_NOTIFICATION_ICON_EMOJI', ':robot_face:') %>"
+slack_notification_username: "<%= ENV.fetch('SLACK_GIST_NOTIFICATION_USERNAME', 'gist-notifier') %>"
+slack_notification_webhook_url: "<%= ENV.fetch('SLACK_GIST_NOTIFICATION_WEBHOOK_URL') %>"
+github_access_token: "<%= ENV.fetch('SLACK_GIST_GITHUB_ACCESS_TOKEN') %>"
+github_endpoint: "<%= ENV.fetch('SLACK_GIST_GITHUB_ENDPOINT') %>"
