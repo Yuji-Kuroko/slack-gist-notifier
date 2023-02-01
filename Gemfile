@@ -1,7 +1,7 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem 'activesupport', '~> 5.2.4'
+gem 'activesupport', '~> 6.0.6'
 gem 'settingslogic'
 gem 'highline'
 gem 'thor'
